@@ -259,6 +259,7 @@
     <div id="etape1" class="card">
       <h2>Étape 1 – Vérifier le programme</h2>
       <p>Tu ouvres le programme dans le logiciel de programmation par blocs. Deux blocs contrôlent les moteurs du robot.</p>
+      <p><small>Le programme contient une erreur avec un moteur à -100</small></p>
       <div class="small-img-row">
         <img src="https://via.placeholder.com/150x150?text=Code" alt="Programme du robot">
         <img src="https://via.placeholder.com/150x150?text=Blocs" alt="Blocs de programmation">
@@ -268,10 +269,10 @@
         <button onclick="mauvaiseReponse('etape1_feedback')">
           Le moteur gauche est à 100 et le moteur droit à 0
         </button>
-        <button onclick="mauvaiseReponse('etape1_feedback')">
+        <button onclick="bonneEtape1()">
           Le moteur gauche est à 100 et le moteur droit à -100
         </button>
-        <button onclick="bonneEtape1()">
+        <button onclick="mauvaiseReponse('etape1_feedback')">
           Les deux moteurs sont à 100, tout est normal
         </button>
       </div>
@@ -405,7 +406,7 @@
 
     function bonneEtape1() {
       const el = document.getElementById("etape1_feedback");
-      el.textContent = "Bien vu ! le programme est correct, mais le robot continue à tourner en rond. Il doit y avoir un autre problème.";
+      el.textContent = "Bien vu ! Tu as corrigé le problème, mais le robot continue à tourner en rond. Il doit y avoir un autre problème.";
       el.classList.remove("error");
       el.classList.add("ok");
       document.getElementById("etape2").style.display = "block";
@@ -450,5 +451,6 @@
   </script>
 </body>
 </html>
+
 
 
