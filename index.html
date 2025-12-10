@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Mission mBot déraille</title>
+</head>
+<body>
+  <h1>Mission mBot déraille</h1>
+  <p>Ton mBot tourne en rond au lieu d'avancer tout droit. À toi de diagnostiquer la panne étape par étape.</p>
+
+  <div id="etape1">
+    <h2>Étape 1 – Vérifier le programme</h2>
+    <p>Tu observes le programme dans le logiciel de programmation par blocs. Les deux moteurs sont commandés.</p>
+    <p>Que constates-tu ?</p>
+    <button onclick="mauvaiseReponse('etape1_feedback')">
+      Le moteur gauche est à 100 et le moteur droit à 0
+    </button>
+    <button onclick="mauvaiseReponse('etape1_feedback')">
+      Le moteur gauche est à 100 et le moteur droit à -100
+    </button>
+    <button onclick="bonneEtape1()">
+      Les deux moteurs sont à 100, tout est normal
+    </button>
+    <p id="etape1_feedback"></p>
+  </div>
+
+  <div id="etape2" style="display:none;">
+    <h2>Étape 2 – Vérifier les branchements des moteurs</h2>
+    <p>Tu regardes le schéma de branchement des moteurs sur la carte du robot.</p>
+    <p>Comment sont branchés les moteurs ?</p>
+    <button onclick="mauvaiseReponse('etape2_feedback')">
+      Les deux moteurs sont branchés sur le même port
+    </button>
+    <button onclick="bonneEtape2()">
+      Le moteur gauche est sur M1 et le moteur droit sur M2, tout est correct
+    </button>
+    <button onclick="mauvaiseReponse('etape2_feedback')">
+      Aucun moteur n'est branché
+    </button>
+    <p id="etape2_feedback"></p>
+  </div>
+
+  <div id="etape3" style="display:none;">
+    <h2>Étape 3 – Tester les câbles</h2>
+    <p>Tu inspectes les câbles des moteurs (visuellement ou avec un testeur).</p>
+    <p>Que découvres-tu ?</p>
+    <button onclick="mauvaiseReponse('etape3_feedback')">
+      Le câble du moteur gauche est coupé
+    </button>
+    <button onclick="mauvaiseReponse('etape3_feedback')">
+      Les deux câbles sont débranchés
+    </button>
+    <button onclick="bonneEtape3()">
+      Les câbles semblent en bon état et correctement branchés
+    </button>
+    <p id="etape3_feedback"></p>
+  </div>
+
+  <div id="etape4" style="display:none;">
+    <h2>Étape 4 – Observer le comportement mécanique</h2>
+    <p>Tu mets le robot en marche et tu observes les roues.</p>
+    <p>Que remarques-tu du côté droit ?</p>
+    <button onclick="mauvaiseReponse('etape4_feedback')">
+      La roue tourne normalement, tout va bien
+    </button>
+    <button onclick="bonneEtape4()">
+      On entend le moteur tourner mais la roue ne bouge presque pas
+    </button>
+    <button onclick="mauvaiseReponse('etape4_feedback')">
+      La roue est complètement bloquée et le moteur est silencieux
+    </button>
+    <p id="etape4_feedback"></p>
+  </div>
+
+  <div id="etape5" style="display:none;">
+    <h2>Étape 5 – Diagnostic final et réparabilité</h2>
+    <p>Après un démontage virtuel du moteur, tu découvres un engrenage en plastique cassé.</p>
+    <p>Quelle est la meilleure solution de réparation ?</p>
+    <button onclick="mauvaiseReponse('etape5_feedback')">
+      Reprogrammer encore le robot pour corriger le problème
+    </button>
+    <button onclick="mauvaiseReponse('etape5_feedback')">
+      Remplacer tout le moteur, même si une seule petite pièce est cassée
+    </button>
+    <button onclick="bonneEtape5()">
+      Remplacer uniquement l'engrenage cassé pour prolonger la durée de vie du robot
+    </button>
+    <p id="etape5_feedback"></p>
+  </div>
+
+  <div id="fin" style="display:none;">
+    <h2>Bravo ! Diagnostic réussi</h2>
+    <p>Tu as identifié que le mBot tournait en rond à cause d'un engrenage cassé dans la transmission d'un moteur.</p>
+    <p>En remplaçant uniquement la pièce défectueuse, tu améliores la réparabilité de l'objet et tu prolonges sa durée de vie.</p>
+    <h3>Compétences travaillées</h3>
+    <ul>
+      <li>Observer un dysfonctionnement et formuler des hypothèses.</li>
+      <li>Vérifier un programme, des branchements et des composants matériels.</li>
+      <li>Identifier une panne liée à la chaîne d'énergie et à la transmission mécanique.</li>
+      <li>Proposer une solution de réparation raisonnée et durable.</li>
+    </ul>
+  </div>
+
+  <script>
+    function mauvaiseReponse(idFeedback) {
+      document.getElementById(idFeedback).textContent = "Ce n'est pas la meilleure hypothèse. Observe bien la situation et réfléchis à nouveau.";
+    }
+
+    function bonneEtape1() {
+      document.getElementById("etape1_feedback").textContent =
+        "Bien vu ! Il doit donc y avoir un autre problème.";
+      document.getElementById("etape2").style.display = "block";
+    }
+
+    function bonneEtape2() {
+      document.getElementById("etape2_feedback").textContent =
+        "Les branchements des moteurs sont corrects. Le problème ne vient pas du port utilisé. Continuons l'enquête.";
+      document.getElementById("etape3").style.display = "block";
+    }
+
+    function bonneEtape3() {
+      document.getElementById("etape3_feedback").textContent =
+        "Les câbles sont en bon état. Pourtant, le robot tourne toujours en rond. Il faut observer plus finement le comportement des roues.";
+      document.getElementById("etape4").style.display = "block";
+    }
+
+    function bonneEtape4() {
+      document.getElementById("etape4_feedback").textContent =
+        "Exact ! Le moteur semble tourner mais la roue ne suit pas. Il y a probablement un problème dans la transmission mécanique.";
+      document.getElementById("etape5").style.display = "block";
+    }
+
+    function bonneEtape5() {
+      document.getElementById("etape5_feedback").textContent =
+        "Très bon choix ! Remplacer uniquement l'engrenage cassé est une solution économique et durable. Tu as réparé le mBot.";
+      document.getElementById("fin").style.display = "block";
+    }
+  </script>
+</body>
+</html>
