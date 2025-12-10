@@ -40,11 +40,11 @@ Mais un joueur attentif remarque que le **moteur B est réglé à vitesse -100**
 
 **Choix proposés** :
 1. « Le moteur gauche est à 100 et le moteur droit à 0 »
-2. ✅ « Le moteur gauche est à 100 et le moteur droit à -100 »
-3. « Les deux moteurs sont à 100, tout est normal »
+2. « Le moteur gauche est à 100 et le moteur droit à -100 »
+3. ✅ « Les deux moteurs sont à 100, tout est normal »
 
 **Feedback bon choix** :  
-*« Bien vu ! Un moteur tourne dans le sens inverse de l'autre. Même si tu corriges le programme, le robot continue à tourner en rond. Il doit y avoir un autre problème. »*
+*« Bien vu ! le programme est correct, mais le robot continue à tourner en rond. Il doit y avoir un autre problème. »*
 
 ---
 
