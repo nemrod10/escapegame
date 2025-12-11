@@ -185,12 +185,12 @@
     }
 
     .value.bad {
-      color: #fecaca;
+      color: white;
     }
 
     .value.good {
-      color: #bbf7d0;
-      border-color: #bbf7d0;
+      color: white;
+      border-color: white;
     }
 
     .side-panel-title {
@@ -389,17 +389,17 @@
             <div class="block">
               <span class="label">Moteur gauche</span>
               <span>vitesse</span>
-              <span class="label">100</span>
+              <span class="value good">100</span>
             </div>
-            <div class="block secondary">
-              <span class="label">Moteur droit</span>
-              <span>vitesse</span>
-              <span
-                id="value-err"
-                class="value clickable bad"
-                title="Clique ici pour analyser cette valeur"
-              >-100</span>
-            </div>
+            <div class="block">
+  <span class="label">Moteur droit</span>
+  <span>vitesse</span>
+  <span
+    id="value-err"
+    class="value clickable"
+    title="Clique ici pour analyser cette valeur"
+  >-100</span>
+</div>
           </div>
         </div>
       </section>
@@ -543,4 +543,3 @@
   </script>
 </body>
 </html>
-
