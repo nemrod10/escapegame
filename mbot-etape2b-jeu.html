@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <title>Mission mBot – Étape 2b : Vérifier les branchements</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: radial-gradient(circle at top, #1e88e5 0, #0d47a1 35%, #020617 100%);
+      color: #f5f5f5;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      min-height: 100vh;
+    }
+
+    .game-shell {
+      width: 100%;
+      max-width: 980px;
+      margin: 24px;
+      background: rgba(6, 11, 25, 0.96);
+      border-radius: 20px;
+      box-shadow: 0 24px 60px rgba(0, 0, 0, 0.7);
+      border: 1px solid rgba(148, 163, 184, 0.4);
+      overflow: hidden;
+    }
+
+    .hud {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 12px 18px;
+      background: linear-gradient(90deg, #0b1020, #111827);
+      border-bottom: 1px solid rgba(148, 163, 184, 0.4);
+      font-size: 0.9rem;
+    }
+
+    .hud-pill {
+      padding: 4px 10px;
+      border-radius: 999px;
+      font-size: 0.8rem;
+      border: 1px solid rgba(148, 163, 184, 0.5);
+      background: radial-gradient(circle at top left, #1d4ed8 0, #020617 55%);
+    }
+
+    .main {
+      display: grid;
+      grid-template-columns: minmax(0, 1.4fr) minmax(0, 1.2fr);
+      gap: 18px;
+      padding: 18px;
+    }
+
+    @media (max-width: 840px) {
+      .main {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .panel {
+      background: radial-gradient(circle at top left, rgba(30, 64, 175, 0.4), rgba(15, 23, 42, 0.95));
+      border-radius: 16px;
+      padding: 14px 16px 16px;
+      border: 1px solid rgba(148, 163, 184, 0.4);
+    }
+
+    .panel h2 {
+      margin: 0 0 6px;
+      font-size: 1.05rem;
+    }
+
+    .panel small {
+      display: block;
+      font-size: 0.8rem;
+      opacity: 0.85;
+    }
+
+    .description {
+      margin-top: 10px;
+      font-size: 0.9rem;
+      line-height: 1.5;
+    }
+
+    .robot-wrap {
+      margin-top: 10px;
+      background: #020617;
+      border-radius: 14px;
+      padding: 10px;
+      border: 1px solid rgba(51, 65, 85, 0.9);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .robot-wrap img {
+      display: block;
+      max-width: 100%;
+      height: auto;
+      border-radius: 12px;
+      border: 1px solid rgba(148, 163, 184, 0.8);
+      background: #0f172a;
+    }
+
+    .panel-right-title {
+      font-size: 0.95rem;
+      margin-bottom: 4px;
+    }
+
+    .question {
+      margin-top: 8px;
+      font-size: 0.9rem;
+    }
+
+    .choice-buttons {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 6px;
+    }
+
+    .btn {
+      border: none;
+      border-radius: 999px;
+      padding: 6px 14px;
+      font-size: 0.85rem;
+      cursor: pointer;
+      background: rgba(37, 99, 235, 0.9);
+      color: #f9fafb;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: transform 0.1s ease, box-shadow 0.1s ease, background 0.15s ease;
+    }
+
+    .btn:hover {
+      background: rgba(59, 130, 246, 1);
+      box-shadow: 0 8px 16px rgba(15, 23, 42, 0.7);
+      transform: translateY(-1px);
+    }
+
+    .btn:active {
+      transform: translateY(0);
+      box-shadow: none;
+    }
+
+    .btn.good {
+      background: rgba(34, 197, 94, 0.9);
+    }
+
+    .btn.good:hover {
+      background: rgba(34, 197, 94, 1);
+    }
+
+    .log {
+      margin-top: 8px;
+      font-size: 0.85rem;
+      background: rgba(15, 23, 42, 0.9);
+      border-radius: 10px;
+      padding: 8px 10px;
+      border: 1px solid rgba(148, 163, 184, 0.6);
+      max-height: 170px;
+      overflow-y: auto;
+    }
+
+    .log-entry {
+      margin-bottom: 4px;
+    }
+
+    .log-entry span.tag {
+      display: inline-block;
+      padding: 1px 6px;
+      margin-right: 4px;
+      border-radius: 999px;
+      font-size: 0.7rem;
+      font-weight: 600;
+    }
+
+    .tag-info {
+      background: rgba(59, 130, 246, 0.2);
+      color: #bfdbfe;
+    }
+
+    .tag-ok {
+      background: rgba(34, 197, 94, 0.2);
+      color: #bbf7d0;
+    }
+
+    .tag-error {
+      background: rgba(248, 113, 113, 0.2);
+      color: #fecaca;
+    }
+
+    .status-box {
+      margin-top: 10px;
+      font-size: 0.85rem;
+      padding: 8px 10px;
+      border-radius: 10px;
+      background: rgba(15, 23, 42, 0.9);
+      border: 1px solid rgba(148, 163, 184, 0.6);
+    }
+
+    .status-box strong {
+      display: block;
+      margin-bottom: 2px;
+      font-size: 0.9rem;
+    }
+
+    .status-box.ok {
+      border-color: #4ade80;
+      box-shadow: 0 0 10px rgba(74, 222, 128, 0.5);
+    }
+
+    .status-box.error {
+      border-color: #f97373;
+      box-shadow: 0 0 10px rgba(248, 113, 113, 0.5);
+    }
+
+    .footer {
+      padding: 10px 16px 14px;
+      border-top: 1px solid rgba(148, 163, 184, 0.4);
+      font-size: 0.8rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: linear-gradient(90deg, #020617, #030712);
+    }
+
+    .step-next {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.8rem;
+      padding: 4px 10px;
+      border-radius: 999px;
+      border: 1px solid rgba(148, 163, 184, 0.7);
+      cursor: pointer;
+      opacity: 0.45;
+    }
+
+    .step-next.enabled {
+      opacity: 1;
+      border-color: #4ade80;
+      color: #bbf7d0;
+      box-shadow: 0 0 8px rgba(74, 222, 128, 0.6);
+    }
+  </style>
+</head>
+<body>
+  <div class="game-shell">
+    <div class="hud">
+      <div>
+        <span class="hud-pill">Mission mBot déraille</span>
+        Étape 2b / 5 · Vérifier les branchements moteurs
+      </div>
+      <div class="hud-right">
+        Objectif : confirmer si les câbles des moteurs sont bien branchés
+      </div>
+    </div>
+
+    <div class="main">
+      <!-- Colonne gauche : image du robot -->
+      <section class="panel">
+        <h2>Observation des branchements</h2>
+        <small>Vue de dessus du mBot avec les câbles moteurs branchés.</small>
+
+        <div class="description">
+          Tu observes maintenant le robot lui‑même.  
+          Les câbles des moteurs sont reliés à la carte mCore. À toi de dire si ces branchements semblent corrects.
+        </div>
+
+        <div class="robot-wrap">
+          <!-- Remplace mbot_branches.png par ta vraie photo quand elle sera prête -->
+          <img src="cable_moteur.jpg" alt="mBot avec câbles correctement branchés" />
+        </div>
+      </section>
+
+      <!-- Colonne droite : question + feedback -->
+      <section class="panel">
+        <div class="panel-right-title">Question</div>
+
+        <p class="question">
+          En regardant la photo, dirais‑tu que les branchements des moteurs sont <strong>corrects</strong> ?
+        </p>
+
+        <div class="choice-buttons">
+          <button class="btn" onclick="answer(true)">Oui, les branchements sont corrects</button>
+          <button class="btn" onclick="answer(false)">Non, il y a une erreur de branchement</button>
+        </div>
+
+        <div id="log" class="log">
+          <div class="log-entry">
+            <span class="tag tag-info">INFO</span>
+            Observe bien la position des câbles par rapport aux ports moteurs de la carte.
+          </div>
+        </div>
+
+        <div id="status" class="status-box">
+          <strong>Consigne</strong>
+          Choisis une réponse puis lis le feedback pour préparer la suite de l’enquête.
+        </div>
+      </section>
+    </div>
+
+    <div class="footer">
+      <span>Indice : un mauvais branchement peut inverser ou désactiver un moteur.</span>
+      <div id="next-step" class="step-next">
+        Étape suivante : tester les câbles →
+      </div>
+    </div>
+  </div>
+
+  <script>
+    let answered = false;
+
+    const logEl = document.getElementById("log");
+    const statusEl = document.getElementById("status");
+    const nextStepEl = document.getElementById("next-step");
+
+    function addLog(type, message) {
+      const entry = document.createElement("div");
+      entry.className = "log-entry";
+
+      const tag = document.createElement("span");
+      tag.classList.add("tag");
+      if (type === "info") tag.classList.add("tag-info");
+      if (type === "ok") tag.classList.add("tag-ok");
+      if (type === "error") tag.classList.add("tag-error");
+      tag.textContent = type.toUpperCase();
+
+      entry.appendChild(tag);
+      entry.appendChild(document.createTextNode(" " + message));
+      logEl.appendChild(entry);
+      logEl.scrollTop = logEl.scrollHeight;
+    }
+
+    function setStatus(kind, html) {
+      statusEl.classList.remove("ok", "error");
+      if (kind === "ok") statusEl.classList.add("ok");
+      if (kind === "error") statusEl.classList.add("error");
+      statusEl.innerHTML = html;
+    }
+
+    function enableNext() {
+      nextStepEl.classList.add("enabled");
+      nextStepEl.onclick = function () {
+        // adapte le nom de fichier à ta page de l'étape 3
+        window.location.href = "mbot-etape3-jeu.html";
+      };
+    }
+
+    function answer(isCorrect) {
+      answered = true;
+
+      if (isCorrect) {
+        addLog("ok", "Bonne réponse : les câbles sont bien branchés sur les bons ports moteurs.");
+        setStatus(
+          "ok",
+          "<strong>Branchements validés</strong>Les branchements ne semblent pas être la cause du problème. Il faut maintenant vérifier l'état des câbles eux‑mêmes."
+        );
+        enableNext();
+      } else {
+        addLog(
+          "error",
+          "Ce robot est volontairement montré avec des branchements corrects : ce n'est donc pas ici que se trouve la panne."
+        );
+        setStatus(
+          "error",
+          "<strong>Mauvaise hypothèse</strong>Sur cette photo, les câbles sont bien branchés. Le robot peut quand même tourner en rond pour une autre raison. Observe bien, puis essaie de nouveau avec la bonne réponse."
+        );
+      }
+    }
+  </script>
+</body>
+</html>

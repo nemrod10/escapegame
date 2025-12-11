@@ -1,0 +1,610 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <title>Mission mBot – Étape 3 : Vérifier les câbles</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: radial-gradient(circle at top, #1e88e5 0, #0d47a1 35%, #020617 100%);
+      color: #f5f5f5;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      min-height: 100vh;
+    }
+
+    .game-shell {
+      width: 100%;
+      max-width: 980px;
+      margin: 24px;
+      background: rgba(6, 11, 25, 0.96);
+      border-radius: 20px;
+      box-shadow: 0 24px 60px rgba(0, 0, 0, 0.7);
+      border: 1px solid rgba(148, 163, 184, 0.4);
+      overflow: hidden;
+    }
+
+    .hud {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 12px 18px;
+      background: linear-gradient(90deg, #0b1020, #111827);
+      border-bottom: 1px solid rgba(148, 163, 184, 0.4);
+      font-size: 0.9rem;
+    }
+
+    .hud-pill {
+      padding: 4px 10px;
+      border-radius: 999px;
+      font-size: 0.8rem;
+      border: 1px solid rgba(148, 163, 184, 0.5);
+      background: radial-gradient(circle at top left, #1d4ed8 0, #020617 55%);
+    }
+
+    .main {
+      display: grid;
+      grid-template-columns: minmax(0, 1.3fr) minmax(0, 1.3fr);
+      gap: 18px;
+      padding: 18px;
+    }
+
+    @media (max-width: 840px) {
+      .main { grid-template-columns: 1fr; }
+    }
+
+    .panel {
+      background: radial-gradient(circle at top left, rgba(30, 64, 175, 0.4), rgba(15, 23, 42, 0.95));
+      border-radius: 16px;
+      padding: 14px 16px 16px;
+      border: 1px solid rgba(148, 163, 184, 0.4);
+    }
+
+    .panel h2 {
+      margin: 0 0 6px;
+      font-size: 1.05rem;
+    }
+
+    .panel small {
+      display: block;
+      font-size: 0.8rem;
+      opacity: 0.85;
+    }
+
+    .description {
+      margin-top: 10px;
+      font-size: 0.9rem;
+      line-height: 1.5;
+    }
+
+    .tools-row {
+      margin-top: 12px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      justify-content: center;
+    }
+
+    .tool-card {
+      width: 150px;
+      background: rgba(15, 23, 42, 0.98);
+      border-radius: 14px;
+      padding: 8px 10px;
+      border: 1px solid rgba(148, 163, 184, 0.7);
+      cursor: pointer;
+      transition: transform 0.12s ease, box-shadow 0.12s ease, border-color 0.12s ease, background 0.12s ease;
+      text-align: center;
+      font-size: 0.85rem;
+    }
+
+    .tool-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 20px rgba(15, 23, 42, 0.85);
+      border-color: #60a5fa;
+      background: rgba(30, 64, 175, 0.95);
+    }
+
+    .tool-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 12px;
+      margin: 0 auto 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.4rem;
+      background: radial-gradient(circle at top, #1e293b, #020617);
+      border: 1px solid rgba(148, 163, 184, 0.8);
+    }
+
+    .tool-name {
+      font-weight: 600;
+      margin-bottom: 2px;
+    }
+
+    .panel-right-title {
+      font-size: 0.95rem;
+      margin-bottom: 4px;
+    }
+
+    .log {
+      margin-top: 8px;
+      font-size: 0.85rem;
+      background: rgba(15, 23, 42, 0.9);
+      border-radius: 10px;
+      padding: 8px 10px;
+      border: 1px solid rgba(148, 163, 184, 0.6);
+      max-height: 160px;
+      overflow-y: auto;
+    }
+
+    .log-entry { margin-bottom: 4px; }
+
+    .log-entry span.tag {
+      display: inline-block;
+      padding: 1px 6px;
+      margin-right: 4px;
+      border-radius: 999px;
+      font-size: 0.7rem;
+      font-weight: 600;
+    }
+
+    .tag-info {
+      background: rgba(59, 130, 246, 0.2);
+      color: #bfdbfe;
+    }
+
+    .tag-ok {
+      background: rgba(34, 197, 94, 0.2);
+      color: #bbf7d0;
+    }
+
+    .tag-error {
+      background: rgba(248, 113, 113, 0.2);
+      color: #fecaca;
+    }
+
+    .status-box {
+      margin-top: 10px;
+      font-size: 0.85rem;
+      padding: 8px 10px;
+      border-radius: 10px;
+      background: rgba(15, 23, 42, 0.9);
+      border: 1px solid rgba(148, 163, 184, 0.6);
+    }
+
+    .status-box strong {
+      display: block;
+      margin-bottom: 2px;
+      font-size: 0.9rem;
+    }
+
+    .status-box.ok {
+      border-color: #4ade80;
+      box-shadow: 0 0 10px rgba(74, 222, 128, 0.5);
+    }
+
+    .status-box.error {
+      border-color: #f97373;
+      box-shadow: 0 0 10px rgba(248, 113, 113, 0.5);
+    }
+
+    .continuity-panel {
+      margin-top: 10px;
+      font-size: 0.9rem;
+    }
+
+    .continuity-header {
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+
+    .continuity-box {
+      margin-top: 6px;
+      background: rgba(15, 23, 42, 0.95);
+      border-radius: 12px;
+      padding: 8px 10px;
+      border: 1px solid rgba(148, 163, 184, 0.8);
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: 10px;
+      align-items: center;
+    }
+
+    .meter {
+      width: 80px;
+      height: 110px;
+      border-radius: 12px;
+      background: radial-gradient(circle at top, #1e293b, #020617);
+      border: 1px solid rgba(148, 163, 184, 0.9);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 6px;
+      font-size: 0.7rem;
+    }
+
+    .meter-screen {
+      height: 28px;
+      border-radius: 6px;
+      background: #020617;
+      border: 1px solid rgba(148, 163, 184, 0.8);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #bbf7d0;
+      font-weight: 600;
+    }
+
+    .meter-dial {
+      margin: 4px auto;
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      border: 3px solid rgba(148, 163, 184, 0.9);
+      position: relative;
+    }
+
+    .meter-dial::after {
+      content: "";
+      position: absolute;
+      width: 2px;
+      height: 14px;
+      background: #f97316;
+      top: 7px;
+      left: 50%;
+      transform: translateX(-50%) rotate(35deg);
+      transform-origin: bottom center;
+    }
+
+    .meter-label {
+      text-align: center;
+      opacity: 0.8;
+    }
+
+    .led {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      border: 2px solid rgba(148, 163, 184, 0.9);
+      margin-bottom: 2px;
+      background: #020617;
+      box-shadow: none;
+      transition: background 0.15s ease, box-shadow 0.15s ease;
+    }
+
+    .led.on {
+      background: #4ade80;
+      box-shadow: 0 0 10px rgba(74, 222, 128, 0.9);
+    }
+
+    .btn {
+      border: none;
+      border-radius: 999px;
+      padding: 6px 14px;
+      font-size: 0.85rem;
+      cursor: pointer;
+      background: rgba(37, 99, 235, 0.9);
+      color: #f9fafb;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: transform 0.1s ease, box-shadow 0.1s ease, background 0.15s ease;
+    }
+
+    .btn:hover {
+      background: rgba(59, 130, 246, 1);
+      box-shadow: 0 8px 16px rgba(15, 23, 42, 0.7);
+      transform: translateY(-1px);
+    }
+
+    .btn:active {
+      transform: translateY(0);
+      box-shadow: none;
+    }
+
+    .btn.good {
+      background: rgba(34, 197, 94, 0.9);
+    }
+
+    .btn.good:hover {
+      background: rgba(34, 197, 94, 1);
+    }
+
+    .answer-buttons {
+      margin-top: 8px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .footer {
+      padding: 10px 16px 14px;
+      border-top: 1px solid rgba(148, 163, 184, 0.4);
+      font-size: 0.8rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: linear-gradient(90deg, #020617, #030712);
+    }
+
+    .step-next {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.8rem;
+      padding: 4px 10px;
+      border-radius: 999px;
+      border: 1px solid rgba(148, 163, 184, 0.7);
+      cursor: pointer;
+      opacity: 0.45;
+    }
+
+    .step-next.enabled {
+      opacity: 1;
+      border-color: #4ade80;
+      color: #bbf7d0;
+      box-shadow: 0 0 8px rgba(74, 222, 128, 0.6);
+    }
+  </style>
+</head>
+<body>
+  <div class="game-shell">
+    <div class="hud">
+      <div>
+        <span class="hud-pill">Mission mBot déraille</span>
+        Étape 3 / 5 · Vérifier les câbles
+      </div>
+      <div class="hud-right">
+        Objectif : savoir si le câble moteur est intact grâce à un test de continuité
+      </div>
+    </div>
+
+    <div class="main">
+      <!-- Colonne gauche : choix d'outils -->
+      <section class="panel">
+        <h2>Choisir le bon outil</h2>
+        <small>Quel outil utiliser pour vérifier l’état électrique d’un câble ?</small>
+
+        <div class="description">
+          Tu veux savoir si le câble du moteur est coupé ou non.  
+          Clique sur l’outil qui te semble le plus adapté pour <strong>tester la continuité</strong> d’un câble.
+        </div>
+
+        <div class="tools-row">
+          <div class="tool-card" onclick="selectTool('multimetre')">
+            <div class="tool-icon">🔌</div>
+            <div class="tool-name">Multimètre</div>
+            <div>Mode ohmmètre</div>
+          </div>
+
+          <div class="tool-card" onclick="selectTool('tournevis')">
+            <div class="tool-icon">🪛</div>
+            <div class="tool-name">Tournevis</div>
+            <div>Plat ou cruciforme</div>
+          </div>
+
+          <div class="tool-card" onclick="selectTool('pince')">
+            <div class="tool-icon">🔧</div>
+            <div class="tool-name">Pince / clé</div>
+            <div>Outil mécanique</div>
+          </div>
+
+          <div class="tool-card" onclick="selectTool('loupe')">
+            <div class="tool-icon">🔍</div>
+            <div class="tool-name">Loupe</div>
+            <div>Observation visuelle</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Colonne droite : explication multimètre + test -->
+      <section class="panel">
+        <div class="panel-right-title">Journal de mission</div>
+        <div id="log" class="log">
+          <div class="log-entry">
+            <span class="tag tag-info">INFO</span>
+            Tu suspectes un problème de câble. Tu dois vérifier s’il laisse bien passer le courant d’un bout à l’autre.
+          </div>
+        </div>
+
+        <div id="status" class="status-box">
+          <strong>Consigne</strong>
+          Commence par cliquer sur un outil pour voir s’il est adapté à un test de continuité.
+        </div>
+
+        <div class="continuity-panel" id="continuity-panel" style="display:none;">
+          <div class="continuity-header">Test de continuité avec un multimètre</div>
+          <div class="continuity-box">
+            <div class="meter">
+              <div class="meter-screen" id="meter-screen">--.--</div>
+              <div class="meter-dial"></div>
+              <div class="meter-label">Mode continuité</div>
+              <div class="meter-label">
+                <div id="led" class="led"></div>
+                LED / Bip
+              </div>
+            </div>
+            <div>
+              <p style="font-size:0.85rem; margin:0 0 6px;">
+                En mode continuité, le multimètre envoie un tout petit courant dans le câble.
+              </p>
+              <ul style="margin:0 0 6px 16px; font-size:0.8rem;">
+                <li>Si le câble est <strong>intact</strong> : le courant passe, le multimètre bippe et la LED s’allume.</li>
+                <li>Si le câble est <strong>coupé</strong> : pas de bip, la LED reste éteinte.</li>
+              </ul>
+              <button class="btn" onclick="runTest()">▶ Procéder au test de continuité</button>
+
+              <div class="answer-buttons" id="answer-zone" style="display:none;">
+                <p style="margin:6px 0 4px; font-size:0.85rem;">
+                  D’après le résultat du test, dans quel état est le câble ?
+                </p>
+                <button class="btn" onclick="answerCable(false)">Le câble est endommagé</button>
+                <button class="btn" onclick="answerCable(true)">Le câble est en bon état</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <div class="footer">
+      <span>Indice : pour tester un câble, il faut un outil qui mesure l’électricité, pas seulement la mécanique.</span>
+      <div id="next-step" class="step-next">
+        Étape suivante : observer le comportement mécanique →
+      </div>
+    </div>
+  </div>
+
+  <script>
+    let toolChosen = false;
+    let testDone = false;
+    let canAnswer = false;
+
+    const logEl = document.getElementById("log");
+    const statusEl = document.getElementById("status");
+    const continuityPanel = document.getElementById("continuity-panel");
+    const meterScreen = document.getElementById("meter-screen");
+    const led = document.getElementById("led");
+    const answerZone = document.getElementById("answer-zone");
+    const nextStepEl = document.getElementById("next-step");
+
+    function addLog(type, message) {
+      const entry = document.createElement("div");
+      entry.className = "log-entry";
+
+      const tag = document.createElement("span");
+      tag.classList.add("tag");
+      if (type === "info") tag.classList.add("tag-info");
+      if (type === "ok") tag.classList.add("tag-ok");
+      if (type === "error") tag.classList.add("tag-error");
+      tag.textContent = type.toUpperCase();
+
+      entry.appendChild(tag);
+      entry.appendChild(document.createTextNode(" " + message));
+      logEl.appendChild(entry);
+      logEl.scrollTop = logEl.scrollHeight;
+    }
+
+    function setStatus(kind, html) {
+      statusEl.classList.remove("ok", "error");
+      if (kind === "ok") statusEl.classList.add("ok");
+      if (kind === "error") statusEl.classList.add("error");
+      statusEl.innerHTML = html;
+    }
+
+    function enableNext() {
+      nextStepEl.classList.add("enabled");
+      nextStepEl.onclick = function () {
+        // adapte le nom de la page de l'étape 4
+        window.location.href = "mbot-etape4-jeu.html";
+      };
+    }
+
+    function selectTool(tool) {
+      toolChosen = true;
+
+      if (tool === "multimetre") {
+        addLog(
+          "ok",
+          "Bon choix : le multimètre permet de mesurer la continuité d’un câble en mode ohmmètre / continuité."
+        );
+        setStatus(
+          "ok",
+          "<strong>Multimètre sélectionné</strong>Tu vas pouvoir tester le câble : en mode continuité, un bip et une LED allumée indiquent que le câble est intact."
+        );
+        continuityPanel.style.display = "block";
+      } else if (tool === "tournevis") {
+        addLog(
+          "error",
+          "Le tournevis sert à visser et dévisser, pas à mesurer si un câble laisse passer le courant."
+        );
+        setStatus(
+          "error",
+          "<strong>Mauvais outil</strong>Le tournevis est utile pour démonter ou resserrer des bornes, mais pas pour tester la continuité électrique."
+        );
+      } else if (tool === "pince") {
+        addLog(
+          "error",
+          "La pince ou la clé est un outil mécanique, utile pour tenir ou couper, mais pas pour tester un câble."
+        );
+        setStatus(
+          "error",
+          "<strong>Mauvais outil</strong>Couper ou plier un câble ne t’indiquera pas s’il est déjà endommagé. Il faut un appareil de mesure."
+        );
+      } else if (tool === "loupe") {
+        addLog(
+          "info",
+          "La loupe permet d’observer l’extérieur du câble mais pas l’intérieur des fils."
+        );
+        setStatus(
+          "error",
+          "<strong>Outil incomplet</strong>Tu peux voir si l’isolant est abîmé, mais un câble peut être coupé à l’intérieur sans rien montrer à l’extérieur. Mieux vaut un multimètre."
+        );
+      }
+    }
+
+    function runTest() {
+      if (!toolChosen) {
+        addLog("error", "Choisis d’abord un outil avant de lancer un test.");
+        setStatus(
+          "error",
+          "<strong>Attention</strong>Sélectionne d’abord le multimètre en mode continuité, puis relance le test."
+        );
+        return;
+      }
+
+      // On suppose que le bon outil (multimètre) a été choisi
+      testDone = true;
+      canAnswer = true;
+
+      // Simuler un test réussi : LED allumée, valeur basse
+      meterScreen.textContent = "0.0 Ω";
+      led.classList.add("on");
+      addLog(
+        "ok",
+        "Le multimètre bippe et la LED s’allume : le câble laisse bien passer le courant, la continuité est bonne."
+      );
+      setStatus(
+        "ok",
+        "<strong>Test réussi</strong>Le multimètre indique une bonne continuité (valeur proche de 0 Ω, bip sonore). Le câble n’est pas coupé."
+      );
+      answerZone.style.display = "block";
+    }
+
+    function answerCable(isGood) {
+      if (!canAnswer || !testDone) {
+        addLog("error", "Tu dois d’abord lancer le test de continuité avant de conclure sur l’état du câble.");
+        setStatus(
+          "error",
+          "<strong>Attention</strong>Lance d’abord le test avec le multimètre pour avoir un vrai indice."
+        );
+        return;
+      }
+
+      if (isGood) {
+        addLog(
+          "ok",
+          "Bonne conclusion : si le multimètre bippe et la LED s’allume, le câble est en bon état."
+        );
+        setStatus(
+          "ok",
+          "<strong>Câble validé</strong>Le câble n’est pas responsable de la panne. Il faudra maintenant observer la partie mécanique (moteur et roue)."
+        );
+        enableNext();
+      } else {
+        addLog(
+          "error",
+          "Le test montre au contraire que la continuité est bonne. Ce câble ne semble pas défectueux."
+        );
+        setStatus(
+          "error",
+          "<strong>Mauvaise interprétation</strong>Quand le multimètre bippe et que la LED s’allume, cela signifie que le câble est continu. Essaie de nouveau en choisissant la bonne conclusion."
+        );
+      }
+    }
+  </script>
+</body>
+</html>

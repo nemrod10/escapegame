@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <title>Mission mBot – Synthèse finale</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: radial-gradient(circle at top, #1e88e5 0, #0d47a1 35%, #020617 100%);
+      color: #f5f5f5;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      min-height: 100vh;
+    }
+
+    .shell {
+      width: 100%;
+      max-width: 980px;
+      margin: 24px;
+      background: rgba(6, 11, 25, 0.96);
+      border-radius: 20px;
+      box-shadow: 0 24px 60px rgba(0, 0, 0, 0.7);
+      border: 1px solid rgba(148, 163, 184, 0.4);
+      overflow: hidden;
+    }
+
+    .hud {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 12px 18px;
+      background: linear-gradient(90deg, #0b1020, #111827);
+      border-bottom: 1px solid rgba(148, 163, 184, 0.4);
+      font-size: 0.9rem;
+    }
+
+    .hud-pill {
+      padding: 4px 10px;
+      border-radius: 999px;
+      font-size: 0.8rem;
+      border: 1px solid rgba(148, 163, 184, 0.5);
+      background: radial-gradient(circle at top left, #22c55e 0, #020617 55%);
+    }
+
+    .main {
+      padding: 20px 22px 18px;
+      display: grid;
+      grid-template-columns: minmax(0, 1.4fr) minmax(0, 1.2fr);
+      gap: 20px;
+    }
+
+    @media (max-width: 840px) {
+      .main { grid-template-columns: 1fr; }
+    }
+
+    .panel {
+      background: radial-gradient(circle at top left, rgba(34, 197, 94, 0.25), rgba(15, 23, 42, 0.98));
+      border-radius: 16px;
+      padding: 16px 18px 18px;
+      border: 1px solid rgba(74, 222, 128, 0.6);
+    }
+
+    .panel-secondary {
+      background: radial-gradient(circle at top left, rgba(37, 99, 235, 0.3), rgba(15, 23, 42, 0.98));
+      border-color: rgba(129, 140, 248, 0.7);
+    }
+
+    h1 {
+      margin: 0 0 6px;
+      font-size: 1.6rem;
+    }
+
+    h2 {
+      margin: 0 0 8px;
+      font-size: 1.1rem;
+    }
+
+    p {
+      margin: 4px 0;
+      font-size: 0.95rem;
+      line-height: 1.6;
+    }
+
+    .big-congrats {
+      font-size: 1.1rem;
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+
+    .badge-success {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 10px;
+      border-radius: 999px;
+      font-size: 0.85rem;
+      background: rgba(22, 163, 74, 0.2);
+      border: 1px solid rgba(74, 222, 128, 0.8);
+      margin-bottom: 8px;
+    }
+
+    ul {
+      margin: 6px 0 0 18px;
+      padding: 0;
+      font-size: 0.9rem;
+      line-height: 1.5;
+    }
+
+    .footer {
+      padding: 10px 18px 14px;
+      border-top: 1px solid rgba(148, 163, 184, 0.4);
+      font-size: 0.8rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: linear-gradient(90deg, #020617, #030712);
+    }
+
+    .btn {
+      border: none;
+      border-radius: 999px;
+      padding: 6px 14px;
+      font-size: 0.85rem;
+      cursor: pointer;
+      background: rgba(37, 99, 235, 0.9);
+      color: #f9fafb;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: transform 0.1s ease, box-shadow 0.1s ease, background 0.15s ease;
+      text-decoration: none;
+    }
+
+    .btn:hover {
+      background: rgba(59, 130, 246, 1);
+      box-shadow: 0 8px 16px rgba(15, 23, 42, 0.7);
+      transform: translateY(-1px);
+    }
+
+    .btn:active {
+      transform: translateY(0);
+      box-shadow: none;
+    }
+  </style>
+</head>
+<body>
+  <div class="shell">
+    <div class="hud">
+      <div>
+        <span class="hud-pill">Mission accomplie</span>
+        Mission mBot déraille – Synthèse finale
+      </div>
+      <div>
+        Cycle 4 · Technologie – Réparabilité & diagnostic
+      </div>
+    </div>
+
+    <div class="main">
+      <section class="panel">
+        <h1>Bravo, tu as réparé le mBot !</h1>
+        <div class="badge-success">
+          ✅ Mission réussie : le robot roule à nouveau droit
+        </div>
+        <p class="big-congrats">
+          Félicitations, tu as mené l’enquête jusqu’au bout et choisi une réparation efficace et durable.
+        </p>
+        <p>
+          Tu as suivi une vraie démarche de diagnostic : tu as vérifié le programme, les branchements, les câbles,
+          puis la partie mécanique pour trouver l’engrenage cassé et le remplacer.
+        </p>
+
+        <h2>Ce que tu as fait dans cette mission</h2>
+        <ul>
+          <li>Corrigé le <strong>programme en blocs</strong> pour que les deux moteurs tournent dans le même sens.</li>
+          <li>Vérifié la <strong>carte mCore</strong>, les <strong>ports moteurs</strong> et les branchements.</li>
+          <li>Testé la <strong>continuité des câbles</strong> avec un multimètre en mode continuité.</li>
+          <li>Observé le <strong>comportement mécanique</strong> : moteur qui tourne mais roue peu entraînée.</li>
+          <li>Ouvert le moteur, identifié un <strong>engrenage cassé</strong> et décidé de remplacer seulement cette pièce.</li>
+        </ul>
+      </section>
+
+      <section class="panel panel-secondary">
+        <h2>Compétences du programme travaillées</h2>
+        <p><strong>Pratiquer des démarches scientifiques et technologiques</strong></p>
+        <ul>
+          <li>Identifier un dysfonctionnement et formuler des hypothèses de panne.</li>
+          <li>Concevoir et suivre une démarche de diagnostic pas à pas (programme → câbles → mécanique).</li>
+        </ul>
+
+        <p><strong>Analyser le fonctionnement d’un objet technique</strong></p>
+        <ul>
+          <li>Relier programme, branchements, moteur, engrenages et roue à la fonction “avancer en ligne droite”.</li>
+          <li>Distinguer chaîne d’information (commande) et chaîne d’énergie / transmission (moteur, engrenages, roue).</li>
+        </ul>
+
+        <p><strong>Concevoir, créer, réaliser une solution de réparation</strong></p>
+        <ul>
+          <li>Comparer plusieurs solutions : reprogrammer, changer tout le moteur, changer une seule pièce.</li>
+          <li>Choisir une solution pertinente, économique et techniquement justifiée (remplacer l’engrenage).</li>
+        </ul>
+
+        <p><strong>Adopter un comportement responsable (réparabilité, développement durable)</strong></p>
+        <ul>
+          <li>Comprendre qu’on peut prolonger la vie d’un objet en <strong>remplaçant une petite pièce</strong> plutôt que tout jeter.</li>
+          <li>Prendre en compte l’impact environnemental et le coût des différentes options de réparation.</li>
+        </ul>
+      </section>
+    </div>
+
+    <div class="footer">
+      <span>Tu peux maintenant présenter ta démarche à la classe ou imaginer une nouvelle mission de réparation.</span>
+      <a class="btn" href="index.html">
+        ⟲ Rejouer la mission
+      </a>
+    </div>
+  </div>
+</body>
+</html>

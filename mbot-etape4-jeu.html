@@ -1,0 +1,536 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <title>Mission mBot – Étape 4 : Observer le comportement mécanique</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: radial-gradient(circle at top, #1e88e5 0, #0d47a1 35%, #020617 100%);
+      color: #f5f5f5;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      min-height: 100vh;
+    }
+
+    .game-shell {
+      width: 100%;
+      max-width: 980px;
+      margin: 24px;
+      background: rgba(6, 11, 25, 0.96);
+      border-radius: 20px;
+      box-shadow: 0 24px 60px rgba(0, 0, 0, 0.7);
+      border: 1px solid rgba(148, 163, 184, 0.4);
+      overflow: hidden;
+    }
+
+    .hud {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 12px 18px;
+      background: linear-gradient(90deg, #0b1020, #111827);
+      border-bottom: 1px solid rgba(148, 163, 184, 0.4);
+      font-size: 0.9rem;
+    }
+
+    .hud-pill {
+      padding: 4px 10px;
+      border-radius: 999px;
+      font-size: 0.8rem;
+      border: 1px solid rgba(148, 163, 184, 0.5);
+      background: radial-gradient(circle at top left, #1d4ed8 0, #020617 55%);
+    }
+
+    .main {
+      display: grid;
+      grid-template-columns: minmax(0, 1.3fr) minmax(0, 1.3fr);
+      gap: 18px;
+      padding: 18px;
+    }
+
+    @media (max-width: 840px) {
+      .main { grid-template-columns: 1fr; }
+    }
+
+    .panel {
+      background: radial-gradient(circle at top left, rgba(30, 64, 175, 0.4), rgba(15, 23, 42, 0.95));
+      border-radius: 16px;
+      padding: 14px 16px 16px;
+      border: 1px solid rgba(148, 163, 184, 0.4);
+    }
+
+    .panel h2 {
+      margin: 0 0 6px;
+      font-size: 1.05rem;
+    }
+
+    .panel small {
+      display: block;
+      font-size: 0.8rem;
+      opacity: 0.85;
+    }
+
+    .description {
+      margin-top: 10px;
+      font-size: 0.9rem;
+      line-height: 1.5;
+    }
+
+    /* Zone animation roue + sonomètre */
+
+    .visual-area {
+      margin-top: 10px;
+      background: #020617;
+      border-radius: 14px;
+      padding: 12px;
+      border: 1px solid rgba(51, 65, 85, 0.9);
+      display: grid;
+      grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr);
+      gap: 12px;
+      align-items: center;
+    }
+
+    @media (max-width: 700px) {
+      .visual-area { grid-template-columns: 1fr; }
+    }
+
+    .wheel-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .wheel {
+      width: 90px;
+      height: 90px;
+      border-radius: 50%;
+      border: 8px solid #e5e7eb;
+      border-top-color: #9ca3af;
+      border-right-color: #9ca3af;
+      background: radial-gradient(circle at 30% 30%, #4b5563, #020617);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .wheel::after {
+      content: "";
+      position: absolute;
+      width: 26px;
+      height: 26px;
+      border-radius: 50%;
+      background: #111827;
+      border: 3px solid #6b7280;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+    }
+
+    /* rotation très lente pour donner l’impression de patinage / non entraînement */
+    @keyframes slow-spin {
+      0%   { transform: rotate(0deg); }
+      100% { transform: rotate(25deg); }
+    }
+
+    .wheel-inner {
+      width: 100%;
+      height: 100%;
+      transform-origin: center;
+      animation: slow-spin 3s ease-in-out infinite alternate;
+    }
+
+    .ground {
+      margin-top: 4px;
+      width: 120px;
+      height: 6px;
+      border-radius: 999px;
+      background: linear-gradient(90deg, #4b5563, #111827, #4b5563);
+      opacity: 0.8;
+    }
+
+    .label-wheel {
+      font-size: 0.8rem;
+      opacity: 0.9;
+    }
+
+    .sound-meter {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      align-items: flex-start;
+    }
+
+    .bars {
+      display: flex;
+      gap: 4px;
+      align-items: flex-end;
+      height: 32px;
+    }
+
+    .bar {
+      width: 6px;
+      border-radius: 999px;
+      background: linear-gradient(to top, #22c55e, #bef264);
+      animation: sound 0.6s infinite ease-in-out;
+    }
+
+    .bar:nth-child(2) { animation-delay: 0.08s; }
+    .bar:nth-child(3) { animation-delay: 0.16s; }
+    .bar:nth-child(4) { animation-delay: 0.24s; }
+
+    @keyframes sound {
+      0%, 100% { height: 6px; opacity: 0.4; }
+      50%      { height: 30px; opacity: 1; }
+    }
+
+    .sound-label {
+      font-size: 0.8rem;
+      opacity: 0.9;
+    }
+
+    /* Choix / feedback */
+
+    .question-block {
+      margin-top: 10px;
+      font-size: 0.9rem;
+    }
+
+    .choice-buttons {
+      margin-top: 6px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .btn {
+      border: none;
+      border-radius: 999px;
+      padding: 6px 12px;
+      font-size: 0.85rem;
+      cursor: pointer;
+      background: rgba(37, 99, 235, 0.9);
+      color: #f9fafb;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: transform 0.1s ease, box-shadow 0.1s ease, background 0.15s ease;
+      text-align: left;
+    }
+
+    .btn:hover {
+      background: rgba(59, 130, 246, 1);
+      box-shadow: 0 8px 16px rgba(15, 23, 42, 0.7);
+      transform: translateY(-1px);
+    }
+
+    .btn:active {
+      transform: translateY(0);
+      box-shadow: none;
+    }
+
+    .btn.good {
+      background: rgba(34, 197, 94, 0.9);
+    }
+
+    .btn.good:hover {
+      background: rgba(34, 197, 94, 1);
+    }
+
+    .panel-right-title {
+      font-size: 0.95rem;
+      margin-bottom: 4px;
+    }
+
+    .log {
+      margin-top: 8px;
+      font-size: 0.85rem;
+      background: rgba(15, 23, 42, 0.9);
+      border-radius: 10px;
+      padding: 8px 10px;
+      border: 1px solid rgba(148, 163, 184, 0.6);
+      max-height: 160px;
+      overflow-y: auto;
+    }
+
+    .log-entry { margin-bottom: 4px; }
+
+    .log-entry span.tag {
+      display: inline-block;
+      padding: 1px 6px;
+      margin-right: 4px;
+      border-radius: 999px;
+      font-size: 0.7rem;
+      font-weight: 600;
+    }
+
+    .tag-info {
+      background: rgba(59, 130, 246, 0.2);
+      color: #bfdbfe;
+    }
+
+    .tag-ok {
+      background: rgba(34, 197, 94, 0.2);
+      color: #bbf7d0;
+    }
+
+    .tag-error {
+      background: rgba(248, 113, 113, 0.2);
+      color: #fecaca;
+    }
+
+    .status-box {
+      margin-top: 10px;
+      font-size: 0.85rem;
+      padding: 8px 10px;
+      border-radius: 10px;
+      background: rgba(15, 23, 42, 0.9);
+      border: 1px solid rgba(148, 163, 184, 0.6);
+    }
+
+    .status-box strong {
+      display: block;
+      margin-bottom: 2px;
+      font-size: 0.9rem;
+    }
+
+    .status-box.ok {
+      border-color: #4ade80;
+      box-shadow: 0 0 10px rgba(74, 222, 128, 0.5);
+    }
+
+    .status-box.error {
+      border-color: #f97373;
+      box-shadow: 0 0 10px rgba(248, 113, 113, 0.5);
+    }
+
+    .footer {
+      padding: 10px 16px 14px;
+      border-top: 1px solid rgba(148, 163, 184, 0.4);
+      font-size: 0.8rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: linear-gradient(90deg, #020617, #030712);
+    }
+
+    .step-next {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.8rem;
+      padding: 4px 10px;
+      border-radius: 999px;
+      border: 1px solid rgba(148, 163, 184, 0.7);
+      cursor: pointer;
+      opacity: 0.45;
+    }
+
+    .step-next.enabled {
+      opacity: 1;
+      border-color: #4ade80;
+      color: #bbf7d0;
+      box-shadow: 0 0 8px rgba(74, 222, 128, 0.6);
+    }
+  </style>
+</head>
+<body>
+  <div class="game-shell">
+    <div class="hud">
+      <div>
+        <span class="hud-pill">Mission mBot déraille</span>
+        Étape 4 / 5 · Observer le comportement mécanique
+      </div>
+      <div class="hud-right">
+        Objectif : comprendre pourquoi la roue ne suit pas alors que le moteur tourne
+      </div>
+    </div>
+
+    <div class="main">
+      <!-- Colonne gauche : animation roue + son -->
+      <section class="panel">
+        <h2>Observation du robot en marche</h2>
+        <small>Regarde ce qui se passe du côté d’une des roues motrices.</small>
+
+        <div class="description">
+          Tu poses le mBot au sol et tu lances le programme.  
+          Tu te concentres sur une roue : tu vois son mouvement et tu écoutes le bruit du moteur.
+        </div>
+
+        <div class="visual-area">
+          <div class="wheel-container">
+            <div class="wheel">
+              <div class="wheel-inner"></div>
+            </div>
+            <div class="ground"></div>
+            <div class="label-wheel">
+              Visuellement, la roue tourne très peu, presque pas.
+            </div>
+          </div>
+
+          <div class="sound-meter">
+            <div class="bars">
+              <div class="bar"></div>
+              <div class="bar"></div>
+              <div class="bar"></div>
+              <div class="bar"></div>
+            </div>
+            <div class="sound-label">
+              Mais tu entends clairement un <strong>bruit de moteur</strong> à l’intérieur.
+            </div>
+          </div>
+        </div>
+
+        <div class="question-block">
+          <p><strong>Que peux‑tu conclure de cette observation ?</strong></p>
+          <div class="choice-buttons">
+            <button class="btn" onclick="answerDiag('tout')">Tout fonctionne normalement.</button>
+            <button class="btn" onclick="answerDiag('moteurKO')">Le moteur ne fonctionne pas du tout.</button>
+            <button class="btn" onclick="answerDiag('moteurOK')">Le moteur fonctionne mais la roue n’est pas entraînée.</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- Colonne droite : journal + suite des choix -->
+      <section class="panel">
+        <div class="panel-right-title">Journal de mission</div>
+        <div id="log" class="log">
+          <div class="log-entry">
+            <span class="tag tag-info">INFO</span>
+            Tu as corrigé le programme, vérifié les branchements et les câbles. Il reste à comprendre ce qui se passe entre le moteur et la roue.
+          </div>
+        </div>
+
+        <div id="status" class="status-box">
+          <strong>Consigne</strong>
+          Observe bien la roue et le son du moteur, puis choisis l’affirmation qui décrit le mieux la situation.
+        </div>
+
+        <div id="action-block" class="question-block" style="display:none; margin-top:14px;">
+          <p><strong>Que décides‑tu de faire maintenant ?</strong></p>
+          <div class="choice-buttons">
+            <button class="btn" onclick="answerAction('rien')">Ne rien faire.</button>
+            <button class="btn" onclick="answerAction('remplacer')">Changer tout le moteur.</button>
+            <button class="btn" onclick="answerAction('ouvrir')">Ouvrir le moteur pour réparer.</button>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <div class="footer">
+      <span>Indice : entre le moteur et la roue, il y a un système de transmission (engrenages, axe…).</span>
+      <div id="next-step" class="step-next">
+        Étape suivante : inspection interne du moteur →
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const logEl = document.getElementById("log");
+    const statusEl = document.getElementById("status");
+    const actionBlock = document.getElementById("action-block");
+    const nextStepEl = document.getElementById("next-step");
+
+    let diagOk = false;
+
+    function addLog(type, message) {
+      const entry = document.createElement("div");
+      entry.className = "log-entry";
+
+      const tag = document.createElement("span");
+      tag.classList.add("tag");
+      if (type === "info") tag.classList.add("tag-info");
+      if (type === "ok") tag.classList.add("tag-ok");
+      if (type === "error") tag.classList.add("tag-error");
+      tag.textContent = type.toUpperCase();
+
+      entry.appendChild(tag);
+      entry.appendChild(document.createTextNode(" " + message));
+      logEl.appendChild(entry);
+      logEl.scrollTop = logEl.scrollHeight;
+    }
+
+    function setStatus(kind, html) {
+      statusEl.classList.remove("ok", "error");
+      if (kind === "ok") statusEl.classList.add("ok");
+      if (kind === "error") statusEl.classList.add("error");
+      statusEl.innerHTML = html;
+    }
+
+    function enableNext() {
+      nextStepEl.classList.add("enabled");
+      nextStepEl.onclick = function () {
+        // adapte le nom de ta page étape 5
+        window.location.href = "mbot-etape5-jeu.html";
+      };
+    }
+
+    function answerDiag(choice) {
+      if (choice === "tout") {
+        addLog("error", "Si tout fonctionnait normalement, le robot n’aurait plus de problème. Or la roue ne suit pas le mouvement.");
+        setStatus(
+          "error",
+          "<strong>Conclusion incorrecte</strong>La roue ne tourne presque pas, donc tout ne fonctionne pas parfaitement."
+        );
+      } else if (choice === "moteurKO") {
+        addLog("error", "On entend pourtant un bruit de moteur : cela signifie qu’il tourne à l’intérieur.");
+        setStatus(
+          "error",
+          "<strong>Mauvaise hypothèse</strong>Le moteur semble actif. Le problème vient plutôt de la transmission entre le moteur et la roue."
+        );
+      } else if (choice === "moteurOK") {
+        diagOk = true;
+        addLog(
+          "ok",
+          "Bonne analyse : le moteur tourne, mais la roue n’est pas correctement entraînée. La panne vient de la transmission mécanique."
+        );
+        setStatus(
+          "ok",
+          "<strong>Bonne conclusion</strong>Le moteur fonctionne, mais quelque chose dans le système d’engrenages ou l’axe n’entraîne plus la roue correctement."
+        );
+        actionBlock.style.display = "block";
+      }
+    }
+
+    function answerAction(choice) {
+      if (!diagOk) {
+        addLog("error", "Commence par analyser correctement la situation avant de choisir une action.");
+        setStatus(
+          "error",
+          "<strong>Attention</strong>Valide d’abord le bon diagnostic (moteur OK, roue non entraînée), puis choisis une action."
+        );
+        return;
+      }
+
+      if (choice === "rien") {
+        addLog("error", "Si tu ne fais rien, le robot continuera à mal fonctionner.");
+        setStatus(
+          "error",
+          "<strong>Mauvais choix</strong>Ignorer la panne ne la réparera pas. Il faut intervenir sur le système mécanique."
+        );
+      } else if (choice === "remplacer") {
+        addLog(
+          "info",
+          "Remplacer tout le moteur pourrait fonctionner, mais ce n’est ni économique ni très écologique si un simple engrenage est cassé."
+        );
+        setStatus(
+          "error",
+          "<strong>Solution possible mais peu durable</strong>Changer tout le moteur coûte cher et génère des déchets. Il vaut mieux d’abord vérifier si une petite pièce (comme un engrenage) peut être réparée."
+        );
+      } else if (choice === "ouvrir") {
+        addLog(
+          "ok",
+          "Très bon réflexe : ouvrir le moteur permet de vérifier l’état des engrenages et des pièces internes."
+        );
+        setStatus(
+          "ok",
+          "<strong>Excellent choix</strong>Tu vas maintenant inspecter l’intérieur du moteur pour chercher une pièce cassée, comme un engrenage en plastique."
+        );
+        enableNext();
+      }
+    }
+  </script>
+</body>
+</html>
