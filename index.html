@@ -1,456 +1,319 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-  <meta charset="UTF-8">
-  <title>Mission mBot déraille</title>
+  <meta charset="UTF-8" />
+  <title>Mission mBot déraille – Accueil</title>
   <style>
     body {
-      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
       margin: 0;
-      padding: 0;
-      background: radial-gradient(circle at top, #1e88e5 0, #0d47a1 40%, #000 100%);
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: radial-gradient(circle at top, #1e88e5 0, #0d47a1 35%, #020617 100%);
       color: #f5f5f5;
       display: flex;
       justify-content: center;
-      align-items: flex-start;
+      align-items: center;
       min-height: 100vh;
     }
 
-    .container {
-      max-width: 900px;
+    .shell {
+      max-width: 960px;
       width: 100%;
       margin: 24px;
-      background: rgba(10, 14, 23, 0.92);
-      border-radius: 16px;
-      box-shadow: 0 18px 45px rgba(0,0,0,0.6);
-      padding: 24px 24px 32px;
-      border: 1px solid rgba(255,255,255,0.08);
-    }
-
-    h1 {
-      text-align: center;
-      margin-top: 0;
-      margin-bottom: 8px;
-    }
-
-    .subtitle {
-      text-align: center;
-      font-size: 0.95rem;
-      opacity: 0.85;
-      margin-bottom: 16px;
-    }
-
-    .header-flex {
-      display: flex;
-      gap: 16px;
-      align-items: center;
-      justify-content: center;
-      margin-bottom: 16px;
-      flex-wrap: wrap;
-    }
-
-    .robot-img {
-      width: 140px;
-      height: 140px;
-      border-radius: 18px;
-      object-fit: cover;
-      border: 2px solid rgba(255,255,255,0.2);
-      box-shadow: 0 8px 20px rgba(0,0,0,0.5);
-      background: #111;
-    }
-
-    .timeline {
-      display: flex;
-      justify-content: space-between;
-      list-style: none;
-      padding: 0;
-      margin: 0 0 20px;
-      counter-reset: step;
-      font-size: 0.75rem;
-    }
-
-    .timeline li {
+      background: rgba(6, 11, 25, 0.96);
+      border-radius: 24px;
+      box-shadow: 0 28px 70px rgba(0, 0, 0, 0.75);
+      border: 1px solid rgba(148, 163, 184, 0.5);
+      padding: 26px 26px 28px;
       position: relative;
-      text-align: center;
-      flex: 1;
-      color: rgba(255,255,255,0.5);
+      overflow: hidden;
     }
 
-    .timeline li::before {
-      counter-increment: step;
-      content: counter(step);
-      width: 22px;
-      height: 22px;
-      border-radius: 50%;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      background: #455a64;
-      color: #fff;
-      margin-bottom: 4px;
-      font-size: 0.7rem;
-    }
-
-    .timeline li::after {
+    .shell::before {
       content: "";
       position: absolute;
-      top: 11px;
-      left: 50%;
-      width: 100%;
-      height: 2px;
-      background: rgba(255,255,255,0.15);
+      inset: -40%;
+      background: radial-gradient(circle at 10% 0, rgba(56, 189, 248, 0.14), transparent 55%),
+                  radial-gradient(circle at 100% 100%, rgba(52, 211, 153, 0.13), transparent 55%);
+      opacity: 0.9;
+      pointer-events: none;
       z-index: -1;
     }
 
-    .timeline li:first-child::after {
-      left: 50%;
-      width: 50%;
-    }
-
-    .timeline li:last-child::after {
-      width: 50%;
-    }
-
-    .timeline li.active {
-      color: #fff;
-      font-weight: 600;
-    }
-
-    .timeline li.active::before {
-      background: #ffca28;
-      color: #000;
-      box-shadow: 0 0 10px rgba(255, 202, 40, 0.7);
-    }
-
-    .timeline li.completed::before {
-      background: #66bb6a;
-      box-shadow: 0 0 8px rgba(102, 187, 106, 0.7);
-    }
-
-    .timeline li.completed {
-      color: #c8e6c9;
-    }
-
-    .card {
-      background: linear-gradient(145deg, rgba(33, 33, 33, 0.95), rgba(25, 32, 72, 0.96));
-      border-radius: 16px;
-      padding: 18px 18px 20px;
-      margin-top: 12px;
-      border: 1px solid rgba(255,255,255,0.08);
-    }
-
-    h2 {
-      margin-top: 0;
-      font-size: 1.2rem;
-    }
-
-    p {
-      line-height: 1.5;
-      font-size: 0.95rem;
-    }
-
-    .choices {
-      margin-top: 12px;
+    header {
       display: flex;
-      flex-direction: column;
-      gap: 8px;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 10px;
     }
 
-    button {
+    .badge {
+      padding: 4px 12px;
+      border-radius: 999px;
+      border: 1px solid rgba(148, 163, 184, 0.8);
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      background: radial-gradient(circle at top left, rgba(37, 99, 235, 0.7), rgba(15, 23, 42, 0.95));
+    }
+
+    .logo-text {
+      font-size: 0.8rem;
+      opacity: 0.85;
+      text-align: right;
+    }
+
+    .hero {
+      display: grid;
+      grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr);
+      gap: 22px;
+      margin-top: 10px;
+      align-items: center;
+    }
+
+    @media (max-width: 820px) {
+      .hero {
+        grid-template-columns: 1fr;
+      }
+      .logo-text {
+        text-align: left;
+      }
+    }
+
+    .hero-main h1 {
+      font-size: clamp(1.9rem, 3vw, 2.4rem);
+      margin: 4px 0 6px;
+    }
+
+    .hero-main h1 span {
+      display: block;
+      font-size: 0.8rem;
+      font-weight: 500;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: #a5b4fc;
+    }
+
+    .tagline {
+      font-size: 0.95rem;
+      opacity: 0.9;
+      line-height: 1.6;
+      margin-bottom: 10px;
+    }
+
+    .problem {
+      font-size: 0.9rem;
+      line-height: 1.6;
+      background: rgba(15, 23, 42, 0.92);
+      border-radius: 14px;
       padding: 10px 12px;
-      border-radius: 10px;
-      border: none;
-      background: rgba(21, 101, 192, 0.85);
-      color: #fff;
-      text-align: left;
-      cursor: pointer;
-      font-size: 0.9rem;
-      transition: transform 0.1s ease, box-shadow 0.1s ease, background 0.15s ease;
+      border: 1px solid rgba(148, 163, 184, 0.7);
+      margin-bottom: 14px;
     }
 
-    button:hover {
-      background: rgba(25, 118, 210, 1);
-      box-shadow: 0 8px 16px rgba(0,0,0,0.4);
-      transform: translateY(-1px);
+    .problem strong {
+      display: block;
+      margin-bottom: 4px;
     }
 
-    button:active {
-      transform: translateY(0);
-      box-shadow: none;
-    }
-
-    .feedback {
-      margin-top: 10px;
-      font-size: 0.9rem;
-      min-height: 1.2em;
-    }
-
-    .feedback.error {
-      color: #ff8a65;
-    }
-
-    .feedback.ok {
-      color: #aed581;
-    }
-
-    .skills {
-      margin-top: 10px;
-      font-size: 0.9rem;
-    }
-
-    ul {
+    .cta-row {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 12px;
       margin-top: 6px;
     }
 
-    .small-img-row {
-      display: flex;
+    .btn-start {
+      border: none;
+      border-radius: 999px;
+      padding: 10px 20px;
+      font-size: 0.95rem;
+      cursor: pointer;
+      background: linear-gradient(135deg, #22c55e, #16a34a);
+      color: #022c22;
+      font-weight: 600;
+      display: inline-flex;
+      align-items: center;
       gap: 8px;
-      margin-top: 10px;
+      box-shadow: 0 12px 24px rgba(22, 163, 74, 0.6);
+      transition: transform 0.12s ease, box-shadow 0.12s ease, filter 0.12s ease;
+    }
+
+    .btn-start:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 16px 30px rgba(22, 163, 74, 0.8);
+      filter: brightness(1.05);
+    }
+
+    .btn-start:active {
+      transform: translateY(0);
+      box-shadow: 0 6px 16px rgba(22, 163, 74, 0.7);
+    }
+
+    .cta-note {
+      font-size: 0.8rem;
+      opacity: 0.9;
+    }
+
+    .meta {
+      font-size: 0.8rem;
+      margin-top: 8px;
+      opacity: 0.85;
+    }
+
+    .hero-side {
+      background: radial-gradient(circle at top, rgba(30, 64, 175, 0.7), rgba(15, 23, 42, 0.98));
+      border-radius: 18px;
+      padding: 12px 14px 14px;
+      border: 1px solid rgba(129, 140, 248, 0.8);
+      box-shadow: 0 14px 30px rgba(15, 23, 42, 0.85);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero-side::before {
+      content: "";
+      position: absolute;
+      width: 140%;
+      height: 140%;
+      top: -20%;
+      left: -20%;
+      opacity: 0.22;
+      background:
+        radial-gradient(circle at 15% 10%, rgba(248, 250, 252, 0.35) 0, transparent 45%),
+        radial-gradient(circle at 85% 90%, rgba(248, 250, 252, 0.22) 0, transparent 55%);
+      pointer-events: none;
+    }
+
+    .hero-side-inner {
+      position: relative;
+      z-index: 1;
+    }
+
+    .chip-row {
+      display: flex;
       flex-wrap: wrap;
+      gap: 6px;
+      margin-bottom: 8px;
+      font-size: 0.75rem;
     }
 
-    .small-img-row img {
-      width: 80px;
-      height: 80px;
-      border-radius: 10px;
-      object-fit: cover;
-      border: 1px solid rgba(255,255,255,0.2);
-      background: #111;
+    .chip {
+      padding: 3px 8px;
+      border-radius: 999px;
+      border: 1px solid rgba(191, 219, 254, 0.9);
+      background: rgba(15, 23, 42, 0.9);
     }
 
-    @media (max-width: 700px) {
-      .header-flex {
-        flex-direction: column;
-      }
-      .timeline li::after {
-        display: none;
-      }
-      .timeline {
-        gap: 6px;
-        flex-wrap: wrap;
-      }
+    .mission-box {
+      font-size: 0.85rem;
+      line-height: 1.6;
+      background: rgba(15, 23, 42, 0.95);
+      border-radius: 12px;
+      padding: 8px 10px;
+      border: 1px solid rgba(191, 219, 254, 0.8);
+      margin-bottom: 8px;
+    }
+
+    .mission-box strong {
+      display: block;
+      margin-bottom: 2px;
+    }
+
+    .list-steps {
+      margin: 6px 0 0;
+      padding-left: 18px;
+      font-size: 0.8rem;
+      line-height: 1.5;
+    }
+
+    footer {
+      margin-top: 14px;
+      font-size: 0.75rem;
+      opacity: 0.8;
+      display: flex;
+      justify-content: space-between;
+      gap: 8px;
+      flex-wrap: wrap;
     }
   </style>
 </head>
 <body>
-  <div class="container">
-    <div class="header-flex">
-      <!-- Remplace les src ci-dessous par tes propres images (mBot, engrenage, labo techno) -->
-      <img class="robot-img" src="https://via.placeholder.com/300x300?text=mBot" alt="mBot">
-      <div>
-        <h1>Mission mBot déraille</h1>
-        <p class="subtitle">Ton mBot tourne en rond… à toi de mener l’enquête comme un vrai technicien de laboratoire !
-        <br />
-        <small>Brouillon, images et video a mettre en place ou animation a faire. Ceci est juste un proof of concept.</small>
+  <div class="shell">
+    <header>
+      <div class="badge">Serious Game · Technologie</div>
+      <div class="logo-text">
+        Collège – Cycle 4<br />
+        Thème : Réparabilité & diagnostic
+      </div>
+    </header>
+
+    <section class="hero">
+      <div class="hero-main">
+        <h1>
+          <span>Game of Tech</span>
+          Mission mBot déraille
+        </h1>
+        <p class="tagline">
+          Le mBot du club de robotique tourne en rond au lieu d’avancer droit.  
+          Ta mission : comprendre pourquoi, étape par étape, comme un vrai technicien de laboratoire.
         </p>
-      </div>
-    </div>
 
-    <ul class="timeline">
-      <li id="step1" class="active">Programme</li>
-      <li id="step2">Branchements</li>
-      <li id="step3">Câbles</li>
-      <li id="step4">Observation</li>
-      <li id="step5">Réparation</li>
-    </ul>
+        <div class="problem">
+          <strong>Problématique</strong>
+          Comment diagnostiquer une panne sur un robot programmable sans tout remplacer ?  
+          Tu devras analyser le programme, les branchements, les câbles et la mécanique pour trouver la pièce défectueuse.
+        </div>
 
-    <p>Problème de départ : le robot ne roule pas droit mais tourne en rond. Tu vas vérifier plusieurs pistes, une par une, pour trouver la vraie cause du problème.</p>
+        <div class="cta-row">
+          <button class="btn-start" onclick="window.location.href='mbot-etape1-jeu.html'">
+            ▶ Lancer la mission
+          </button>
+          <div class="cta-note">
+            Durée de l’enquête : environ 5–10 minutes pour les premières étapes.<br />
+            Recommandé : casque audio ou enceintes pour la mise en situation (optionnel).
+          </div>
+        </div>
 
-    <div id="etape1" class="card">
-      <h2>Étape 1 – Vérifier le programme</h2>
-      <p>Tu ouvres le programme dans le logiciel de programmation par blocs. Deux blocs contrôlent les moteurs du robot.</p>
-      <p><small>Le programme contient une erreur avec un moteur à -100</small></p>
-      <div class="small-img-row">
-        <img src="https://via.placeholder.com/150x150?text=Code" alt="Programme du robot">
-        <img src="https://via.placeholder.com/150x150?text=Blocs" alt="Blocs de programmation">
+        <div class="meta">
+          Pour enseignant·e : activité de technologie (5e/4e) axée sur la démarche de diagnostic et la réparabilité.
+        </div>
       </div>
-      <p>Que constates-tu en lisant les valeurs de vitesse des deux moteurs ?</p>
-      <div class="choices">
-        <button onclick="mauvaiseReponse('etape1_feedback')">
-          Le moteur gauche est à 100 et le moteur droit à 0
-        </button>
-        <button onclick="bonneEtape1()">
-          Le moteur gauche est à 100 et le moteur droit à -100
-        </button>
-        <button onclick="mauvaiseReponse('etape1_feedback')">
-          Les deux moteurs sont à 100, tout est normal
-        </button>
-      </div>
-      <p id="etape1_feedback" class="feedback"></p>
-    </div>
 
-    <div id="etape2" class="card" style="display:none;">
-      <h2>Étape 2 – Vérifier les branchements des moteurs</h2>
-      <p>Tu examines le branchement des moteurs sur la carte du robot.</p>
-      <div class="small-img-row">
-        <img src="https://via.placeholder.com/150x150?text=Carte" alt="Carte du robot">
-        <img src="https://via.placeholder.com/150x150?text=M1/M2" alt="Ports M1 et M2">
-      </div>
-      <p>Comment sont branchés les moteurs ?</p>
-      <div class="choices">
-        <button onclick="mauvaiseReponse('etape2_feedback')">
-          Les deux moteurs sont branchés sur le même port
-        </button>
-        <button onclick="bonneEtape2()">
-          Le moteur gauche est sur M1 et le moteur droit sur M2, tout est correct
-        </button>
-        <button onclick="mauvaiseReponse('etape2_feedback')">
-          Aucun moteur n'est branché
-        </button>
-      </div>
-      <p id="etape2_feedback" class="feedback"></p>
-    </div>
+      <aside class="hero-side">
+        <div class="hero-side-inner">
+          <div class="chip-row">
+            <div class="chip">Diagnostic de panne</div>
+            <div class="chip">Robot mBot</div>
+            <div class="chip">Programmation par blocs</div>
+            <div class="chip">Réparabilité</div>
+          </div>
 
-    <div id="etape3" class="card" style="display:none;">
-      <h2>Étape 3 – Tester les câbles</h2>
-      <p>Tu inspectes les câbles des moteurs : tu regardes s’ils sont abîmés ou coupés.</p>
-      <div class="small-img-row">
-        <img src="https://via.placeholder.com/150x150?text=Cable+OK" alt="Câble moteur">
-        <img src="https://via.placeholder.com/150x150?text=Test" alt="Test du câble">
-      </div>
-      <p>Que remarques-tu ?</p>
-      <div class="choices">
-        <button onclick="mauvaiseReponse('etape3_feedback')">
-          Le câble du moteur gauche est coupé
-        </button>
-        <button onclick="mauvaiseReponse('etape3_feedback')">
-          Les deux câbles sont débranchés
-        </button>
-        <button onclick="bonneEtape3()">
-          Les câbles semblent en bon état et correctement branchés
-        </button>
-      </div>
-      <p id="etape3_feedback" class="feedback"></p>
-    </div>
+          <div class="mission-box">
+            <strong>Mission</strong>
+            Tu es appelé au labo de technologie : le robot de démonstration ne se comporte plus comme prévu.  
+            Avant de sortir les tournevis, tu commences par vérifier le programme.
+          </div>
 
-    <div id="etape4" class="card" style="display:none;">
-      <h2>Étape 4 – Observer le comportement mécanique</h2>
-      <p>Tu poses le robot au sol, tu lances le programme et tu observes les roues.</p>
-      <div class="small-img-row">
-        <img src="https://via.placeholder.com/150x150?text=Roue" alt="Roue du robot">
-        <img src="https://via.placeholder.com/150x150?text=Moteur" alt="Moteur du robot">
-      </div>
-      <p>Que remarques-tu du côté droit ?</p>
-      <div class="choices">
-        <button onclick="mauvaiseReponse('etape4_feedback')">
-          La roue tourne normalement, tout va bien
-        </button>
-        <button onclick="bonneEtape4()">
-          On entend le moteur tourner mais la roue ne bouge presque pas
-        </button>
-        <button onclick="mauvaiseReponse('etape4_feedback')">
-          La roue est complètement bloquée et le moteur est silencieux
-        </button>
-      </div>
-      <p id="etape4_feedback" class="feedback"></p>
-    </div>
+          <div class="mission-box">
+            <strong>Étapes du jeu</strong>
+            <ol class="list-steps">
+              <li>Observer le comportement du robot.</li>
+              <li>Vérifier le programme (moteurs à 100 / -100).</li>
+              <li>Contrôler les branchements et les câbles.</li>
+              <li>Analyser la mécanique (transmission, engrenage).</li>
+              <li>Proposer une réparation durable.</li>
+            </ol>
+          </div>
+        </div>
+      </aside>
+    </section>
 
-    <div id="etape5" class="card" style="display:none;">
-      <h2>Étape 5 – Diagnostic final et réparabilité</h2>
-      <p>Après un démontage virtuel du moteur, tu découvres un engrenage en plastique fissuré.</p>
-      <div class="small-img-row">
-        <img src="https://via.placeholder.com/150x150?text=Engrenage" alt="Engrenage cassé">
-        <img src="https://via.placeholder.com/150x150?text=Reparation" alt="Réparation du moteur">
-      </div>
-      <p>Quelle est la meilleure solution de réparation ?</p>
-      <div class="choices">
-        <button onclick="mauvaiseReponse('etape5_feedback')">
-          Reprogrammer encore le robot pour corriger le problème
-        </button>
-        <button onclick="mauvaiseReponse('etape5_feedback')">
-          Remplacer tout le moteur, même si une seule petite pièce est cassée
-        </button>
-        <button onclick="bonneEtape5()">
-          Remplacer uniquement l'engrenage cassé pour prolonger la durée de vie du robot
-        </button>
-      </div>
-      <p id="etape5_feedback" class="feedback"></p>
-    </div>
-
-    <div id="fin" class="card" style="display:none;">
-      <h2>Bravo ! Diagnostic réussi</h2>
-      <p>Tu as identifié que le mBot tournait en rond à cause d'un engrenage cassé dans la transmission d'un moteur.</p>
-      <p>En remplaçant uniquement la pièce défectueuse, tu améliores la réparabilité de l'objet et tu prolonges sa durée de vie.</p>
-      <div class="skills">
-        <strong>Compétences travaillées :</strong>
-        <ul>
-          <li>Observer un dysfonctionnement et formuler des hypothèses.</li>
-          <li>Vérifier un programme, des branchements et des composants matériels.</li>
-          <li>Identifier une panne liée à la chaîne d'énergie et à la transmission mécanique.</li>
-          <li>Proposer une solution de réparation raisonnée et durable.</li>
-        </ul>
-      </div>
-    </div>
+    <footer>
+      <span>Conseil pour l’élève : lis bien les consignes à chaque étape avant de cliquer.</span>
+      <span>Créé pour une utilisation en classe de technologie (cycle 4).</span>
+    </footer>
   </div>
-
-  <script>
-    function setTimeline(step) {
-      const steps = [1, 2, 3, 4, 5];
-      steps.forEach(function (num) {
-        const li = document.getElementById("step" + num);
-        li.classList.remove("active", "completed");
-        if (num < step) {
-          li.classList.add("completed");
-        } else if (num === step) {
-          li.classList.add("active");
-        }
-      });
-    }
-
-    function mauvaiseReponse(idFeedback) {
-      const el = document.getElementById(idFeedback);
-      el.textContent = "Ce n'est pas la meilleure hypothèse. Observe bien la situation et essaie à nouveau.";
-      el.classList.remove("ok");
-      el.classList.add("error");
-    }
-
-    function bonneEtape1() {
-      const el = document.getElementById("etape1_feedback");
-      el.textContent = "Bien vu ! Tu as corrigé le problème, mais le robot continue à tourner en rond. Il doit y avoir un autre problème.";
-      el.classList.remove("error");
-      el.classList.add("ok");
-      document.getElementById("etape2").style.display = "block";
-      setTimeline(2);
-    }
-
-    function bonneEtape2() {
-      const el = document.getElementById("etape2_feedback");
-      el.textContent = "Les branchements des moteurs sont corrects. Le problème ne vient pas du port utilisé. Continuons l'enquête.";
-      el.classList.remove("error");
-      el.classList.add("ok");
-      document.getElementById("etape3").style.display = "block";
-      setTimeline(3);
-    }
-
-    function bonneEtape3() {
-      const el = document.getElementById("etape3_feedback");
-      el.textContent = "Les câbles sont en bon état. Pourtant, le robot tourne toujours en rond. Il faut observer plus finement le comportement des roues.";
-      el.classList.remove("error");
-      el.classList.add("ok");
-      document.getElementById("etape4").style.display = "block";
-      setTimeline(4);
-    }
-
-    function bonneEtape4() {
-      const el = document.getElementById("etape4_feedback");
-      el.textContent = "Exact ! Le moteur semble tourner mais la roue ne suit pas. Il y a probablement un problème dans la transmission mécanique.";
-      el.classList.remove("error");
-      el.classList.add("ok");
-      document.getElementById("etape5").style.display = "block";
-      setTimeline(5);
-    }
-
-    function bonneEtape5() {
-      const el = document.getElementById("etape5_feedback");
-      el.textContent = "Très bon choix ! Remplacer uniquement l'engrenage cassé est une solution économique et durable. Tu as réparé le mBot.";
-      el.classList.remove("error");
-      el.classList.add("ok");
-      document.getElementById("fin").style.display = "block";
-      setTimeline(5);
-    }
-  </script>
 </body>
 </html>
-
-
-
